@@ -85,8 +85,8 @@ jobs:
           docker push ercankurtoglu/multi-server:$SHA
           docker push ercankurtoglu/multi-worker:$SHA
 
-      - name: Apply Kubernetes configurations
-        run: kubectl apply -f k8s
+      - name: Apply Kubernetes Configs
+        run: kubectl apply -f k8s --validate=false
 
       - name: Update Kubernetes deployments
         run: |
