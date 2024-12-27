@@ -24,10 +24,6 @@ jobs:
       - name: Configure Google Cloud SDK path
         run: echo "source $HOME/google-cloud-sdk/path.bash.inc"
 
-      # Install kubectl and update
-      - name: Install kubectl
-        run: gcloud components update kubectl
-
       - name: Decrypt service account key
         run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.PASSPHRASE }}" --output service-account.json service-account.json.gpg
 
