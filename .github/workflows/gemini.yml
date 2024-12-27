@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       # Download gcloud SDK and install
       - name: Download Google Cloud SDK
@@ -31,9 +32,12 @@ jobs:
       - name: Authenticate to Google Cloud
         run: gcloud auth activate-service-account --key-file=service-account.json
 
-      # Install the gke-gcloud-auth-plugin binary
-      - name: Install the gke-gcloud-auth-plugin
-        run:  sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin
+      - name: install the gcloud cli
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: multi-k8s-445712
+          install_components: 'gke-gcloud-auth-plugin'
+          export_default_credentials: true
 
       # Set project and zone; get cluster credentials
       - name: Set project ID,zone get credentials
