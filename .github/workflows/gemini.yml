@@ -31,16 +31,16 @@ jobs:
       - name: Authenticate to Google Cloud
         run: gcloud auth activate-service-account --key-file=service-account.json
 
+      # Install the gke-gcloud-auth-plugin binary
+      - name: Install the gke-gcloud-auth-plugin
+        run:  sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin
+
       # Set project and zone; get cluster credentials
       - name: Set project ID,zone get credentials
         run: |
           gcloud config set project multi-k8s-445712
           gcloud config set compute/zone us-central1-a
           gcloud container clusters get-credentials multi-cluster
-
-      # Install the gke-gcloud-auth-plugin binary
-      - name: Install the gke-gcloud-auth-plugin
-        run:  sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin
 
       # Login to Docker registry
       - name: Log in to Docker Hub
