@@ -31,28 +31,26 @@ jobs:
       - name: Authenticate to Google Cloud
         run: gcloud auth activate-service-account --key-file=service-account.json
 
-      # Set project and zone
-      - name: Set project ID
-        run: gcloud config set project multi-k8s-445712
+      # Set project and zone; get cluster credentials
+      - name: Set project ID,zone get credentials
+        run: |
+          gcloud config set project multi-k8s-445712
+          gcloud config set compute/zone us-central1-a
+          gcloud container clusters get-credentials multi-cluster
 
-      - name: Set compute zone
-        run: gcloud config set compute/zone us-central1-a
-
-      # Get cluster credentials
-      - name: Get cluster credentials
-        run: gcloud container clusters get-credentials multi-cluster
+      # Install the gke-gcloud-auth-plugin binary
+      - name: Install the gke-gcloud-auth-plugin
+        run:  sudo apt-get install google-cloud-cli-gke-gcloud-auth-plugin
 
       # Login to Docker registry
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Build test image
-      - name: Build test image
-        run: docker build -t ercankurtoglu/react-test -f ./client/Dockerfile.dev ./client
-
-      # Run tests
-      - name: Run tests
-        run: docker run -e CI=true ercankurtoglu/react-test npm test
+      # Build and run test image
+      - name: Build and run test image
+        run: |
+          docker build -t ercankurtoglu/react-test -f ./client/Dockerfile.dev ./client
+          docker run -e CI=true ercankurtoglu/react-test npm test
 
       # Build container images with tags
       - name: Build container images
@@ -71,20 +69,13 @@ jobs:
           docker push ercankurtoglu/multi-server:$SHA
           docker push ercankurtoglu/multi-worker:$SHA
 
-      # Install the gke-gcloud-auth-plugin binary
-      - name: Install the gke-gcloud-auth-plugin
-        run:  gcloud components install gke-gcloud-auth-plugin
-      
       # Apply Kubernetes configurations
       - name: Apply Kubernetes configurations
         run: kubectl apply -f k8s
 
       # Update deployments with image tags
-      - name: Update server deployment image
-        run: kubectl set image deployments/server-deployment server=ercankurtoglu/multi-server:$SHA
-
-      - name: Update client deployment image
-        run: kubectl set image deployments/client-deployment client=ercankurtoglu/multi-client:$SHA
-
-      - name: Update worker deployment image
-        run: kubectl set image deployments/worker-deployment worker=ercankurtoglu/multi-worker:$SHA
+      - name: Update server, client, worker deployment image
+        run: |
+          kubectl set image deployments/server-deployment server=ercankurtoglu/multi-server:$SHA
+          kubectl set image deployments/client-deployment client=ercankurtoglu/multi-client:$SHA
+          kubectl set image deployments/worker-deployment worker=ercankurtoglu/multi-worker:$SHA
