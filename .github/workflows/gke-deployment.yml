@@ -72,21 +72,21 @@ jobs:
 
       - name: Build and push Docker images
         run: |
-          docker build -t ercankurtoglu/multi-client:latest -t ercankurtoglu/multi-client:${{ env.SHA }} -f ./client/Dockerfile ./client
-          docker build -t ercankurtoglu/multi-server:latest -t ercankurtoglu/multi-server:${{ env.SHA }} -f ./server/Dockerfile ./server
-          docker build -t ercankurtoglu/multi-worker:latest -t ercankurtoglu/multi-worker:${{ env.SHA }} -f ./worker/Dockerfile ./worker
+          docker build -t ercankurtoglu/multi-client:latest -t ercankurtoglu/multi-client:$SHA -f ./client/Dockerfile ./client
+          docker build -t ercankurtoglu/multi-server:latest -t ercankurtoglu/multi-server:$SHA -f ./server/Dockerfile ./server
+          docker build -t ercankurtoglu/multi-worker:latest -t ercankurtoglu/multi-worker:$SHA -f ./worker/Dockerfile ./worker
           docker push ercankurtoglu/multi-client:latest
           docker push ercankurtoglu/multi-server:latest
           docker push ercankurtoglu/multi-worker:latest
-          docker push ercankurtoglu/multi-client:${{ env.SHA }}
-          docker push ercankurtoglu/multi-server:${{ env.SHA }}
-          docker push ercankurtoglu/multi-worker:${{ env.SHA }}
+          docker push ercankurtoglu/multi-client:$SHA
+          docker push ercankurtoglu/multi-server:$SHA
+          docker push ercankurtoglu/multi-worker:$SHA
 
       - name: Apply Kubernetes configurations
         run: kubectl apply -f k8s
 
       - name: Update Kubernetes deployments
         run: |
-          kubectl set image deployments/server-deployment server=ercankurtoglu/multi-server:${{ env.SHA }}
-          kubectl set image deployments/client-deployment client=ercankurtoglu/multi-client:${{ env.SHA }}
-          kubectl set image deployments/worker-deployment worker=ercankurtoglu/multi-worker:${{ env.SHA }}
+          kubectl set image deployments/server-deployment server=ercankurtoglu/multi-server:$SHA
+          kubectl set image deployments/client-deployment client=ercankurtoglu/multi-client:$SHA
+          kubectl set image deployments/worker-deployment worker=ercankurtoglu/multi-worker:$SHA
