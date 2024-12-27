@@ -24,7 +24,7 @@ jobs:
           version: 'latest'
 
       - name: Decrypt service account key
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$PASSPHRASE" --output service-account.json service-account.json.gpg
+        run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.PASSPHRASE }}" --output service-account.json service-account.json.gpg
 
       - name: Authenticate to Google Cloud
         run: gcloud auth activate-service-account --key-file=service-account.json
@@ -59,7 +59,7 @@ jobs:
           version: 'latest'
 
       - name: Decrypt service account key
-        run: gpg --quiet --batch --yes --decrypt --passphrase="$PASSPHRASE" --output service-account.json service-account.json.gpg
+        run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.PASSPHRASE }}" --output service-account.json service-account.json.gpg
 
       - name: Authenticate to Google Cloud
         run: gcloud auth activate-service-account --key-file=service-account.json
