@@ -21,11 +21,11 @@ Bu tablo dosyalarla ilgili gerekli açılamaları ve linkleri içermektedir.
  
 ## Folder tree:
 
-![alt text](slides/img/{366B27B4-1200-4B54-BD17-EE12EF0FA03E}.png)
+![alt text](slides/img/{2B49491B-0FAD-4602-9259-48A0542DB1F9}.png)
 
 | Number | Title | File | Description | Slides |
 | -- | -- | -- | -- | -- |
-| 00 | [React Server](https://github.com/ErcanKurtoglu/multi-k8s#00-react-server) | [Folder:client](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/client) | React app ile oluşturuldu | [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/slides/00_reactserver.pdf) |
+| 00 | [React Server](https://github.com/ErcanKurtoglu/multi-k8s#00-react-server) | [Folder:client](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/client) | React app ile oluşturuldu | [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/00_reactserver.pdf) |
 | 01 | Github Actions Secret | [service-account.json.gpg](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/service-account.json.gpg) | GKE user secret file | [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/service-account.json.gpg) |
 |----|----|----|
 
@@ -39,13 +39,3 @@ Bu projede hazırlanan serviceler, podlar, clusterlar şematik olarak gösterilm
 
 ### 🔐 00. React Server
 
-
-
-
-
-
--Root
-  -client
-  -server
-  -worker
-  -k8s
