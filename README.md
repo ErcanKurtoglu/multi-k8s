@@ -1,6 +1,14 @@
 # Multi Container App with Kubernetes on GKE
 Bu proje multi-containerlar ile kubernetes uygulaması yapmak amacıyla hazırlanmıştır. React app ve Fibonacci serislerini hesaplama algoritması oluşturularak GKE 'de deploy edilmiştir. (Multi-Docker ElasticBeanstalk projesinin devamı olarak hazırlanmmıştır. Proje mimarisi Project Structure bölümünde listelenmiştir.)
 
+CI/CD işlemi GithubAction üzerinden yapılmıştır.
+
+Uygulamaya `ercankurtoglu.xyz` ve `www.ercankurtoglu.xyz` domain isimleriyle ulaşılabilmektedir ve `https` certificate ayarları yapılmıştır.
+
+Web sitesi arayüzünde istenilen sayı girilerek `Submit` butonuna tıklanır ve ardından sayfa yenilenir. Sonuç alt kısımda listelenir.
+
+*<u>GCP (Google Cloud Platform) kullanımı ücret gerektirebilir.</u>*
+
 ## Important links
 * [WSL2](https://learn.microsoft.com/en-us/windows/wsl/about): Bütün proje WSL'de (Windows Subsystem for Linux) hazırlanmıştır.
 * [Docker-desktop](https://www.docker.com/products/docker-desktop/): WSL2 ile container ugulamaların oluşturulması ve Kubernetes için VM olarak kullanılması.
@@ -30,7 +38,8 @@ Bu tablo dosyalarla ilgili gerekli açılamaları ve linkleri içermektedir.
 | 02 | [Fibonacci](https://github.com/ErcanKurtoglu/multi-k8s#-02-fibonacci) | [Folder:worker](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/worker) | Fibonocci algoritmasının çalıştığı kaynak | |
 | 03 | [Kubernetes](https://github.com/ErcanKurtoglu/multi-k8s#-03-kubernetes) | [Folder:k8s](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/k8s) | Kubernetis config dosyalarının bulunduğu kaynak | [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/03_kubernetes.pdf) |
 | 04 | [Github Actions](https://github.com/ErcanKurtoglu/multi-k8s#-04-github-actions) | [Folder:.github/workflows](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/.github/workflows) | Github actions CI/CD için gerekli yaml dosyası| [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/04_githubactions.pdf) |
-| 05 | [Github Actions Secret, repo secret](https://github.com/ErcanKurtoglu/multi-k8s#-05-github-actions-secret) |  | GKE user secret file encrypt etme ve repo secretlarını ekleme| [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/05_secrets.pdf) |
+| 05 | [Github Actions Secret, repo secret](https://github.com/ErcanKurtoglu/multi-k8s#-05-github-actions-secret) |  | GKE user secret file encrypt etme ve repo secret'larını ekleme| [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/05_secrets.pdf) |
+| 06 | [GPC](https://github.com/ErcanKurtoglu/multi-k8s#-06-gpc) |  | GPC'de Kubernetes clusterı oluşturma ve gerekli konfigürasyon ayarları. Domain name için gerekli ayarlar.| [Goto Slide](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/slides/05_gpc.pdf) |
 |----|----|----|
 
 ## Project Structure
@@ -56,7 +65,7 @@ Genel proje mimarisi:
 
 2. <u>Created react app:</u>
 
-    ![alt text](slides/img/image.png)
+        npx create-react-app client
 
 3. <u>Added Fib.js and Other.js:</u> 
 
@@ -64,14 +73,33 @@ Genel proje mimarisi:
     **Other.js:** boş bir sayfadır.
 
 ### ![alt text](slides/img/o46jvwuf2.png) 01. Express Server
+Express Server: Redis, Postgres ve React App arasındaki iletişimi sağlar.
 
 ### ![alt text](slides/img/dhtnoalh.png) 02. Fibonacci
+Fibonacci algoritmasının çalıştığı server. Uygulama 40' a kadar olan fibonacci sayılarını göstermektedir.
 
 ### ![alt text](slides/img/260p99kt2.png) 03. Kubernetes
+Client ve server service'leri için 3'er adet, geri kalan service'ler için 1'er adet Pod oluşturulmuştur. Her bir servis için ClusterIP Service'i vardır. Node'un giriş trafiği için Ingress-Nginx konfigüre edilmiştir.
+
+Local devolopment için [ingres-service-local-dev](https://github.com/ErcanKurtoglu/multi-k8s/blob/master/k8s_local_dev/ingress-service-local-dev.yaml) configürasyon dosyası kullanılmalı; certificate, issuer, ingress-service configürasyon dosyaları ise kullanılmamalıdır. Bunun dışında `k8s` klasörünün içerisindeki diğer config dosyaları da kullanılmalıdır.
+
+Local development:  
+
+    kubectl apply -f [yaml files]
+
+Production için ise tam tersi configürasyon dosyaları kullanılmalıdır. Production için gerekli kodlama GithubActions config dosyasında mevcuttur.
 
 ### ![alt text](slides/img/fpa0rfwt2.png) 04. Github Actions
 
-### 🔐 05. Secrets
+GithubActions projenin CI/CD kısmının yütüldüğü yerdir. Tüm işlem test ve deploy olmak üzere iki job ile gerçekleşmektedir. Her PR (pull request)'de işlem tetiklenir ve otomatik test işlemi gerçekleşir. Test işlemi başarılı olursa otomatik deploy işlemi gerçekleşir.
 
+### ![alt text](slides/img/u7q072ec2.png) 05. Secrets
 
+Projedeki hassas verilerin saklandığı kısımdır. Sırasıyla;
+
+    [Repo] -> Settings -> Secrets and variables -> Action -> New Repository secret
+
+ile gerekli bilgiler projeye eklenir.
+
+### ![alt text](slides/img/podz7i7h2.png) 06. GPC
 
